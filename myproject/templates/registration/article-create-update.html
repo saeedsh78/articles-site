@@ -1,0 +1,84 @@
+{% extends 'registration/base.html' %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% block title %}{% block title-meta %}
+    افزودن مقاله
+{% endblock %}{% endblock %}
+
+{% block main %}
+<div class="col-md-12">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title mb-0 float-left">اطلاعات مقاله</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                <div class="row">
+                    <div class="col-6">
+                        {{ form.title|as_crispy_field }}
+                    </div>
+                    <div class="col-6">
+                        {{ form.slug|as_crispy_field }}
+                    </div>
+                    <div class="col-12">
+                        {{ form.description|as_crispy_field }}
+                    </div>
+                    <div class="col-6">
+                        {{ form.category|as_crispy_field }}
+                        {{ form.is_special|as_crispy_field }}
+                    </div>
+                    <div class="col-6">
+                        {{ form.thumbnail|as_crispy_field }}
+                        <label for="id_status" class=" requiredField" style="margin-bottom: 0; padding: 0">
+                                زمان انتشار
+                                <span class="asteriskField">*</span>
+                        </label>
+                        <div class="input-group date" id="datetimepicker1" data-target-input="nearest" style="direction: ltr; margin-top: 10px">
+                            {{ form.publish }}
+                          <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+
+                        <script>
+                          $(function () {
+                            $("#datetimepicker1").datetimepicker({
+                              format: 'YYYY-MM-DD HH:mm:ss',
+                                defaultDate: moment(),
+                            });
+                          });
+                        </script>
+                    </div>
+                    {% if user.is_superuser %}
+                        <div class="col-6">
+                            {{ form.author|as_crispy_field }}
+                        </div>
+                        <div class="col-6">
+                            {{ form.status|as_crispy_field }}
+                        </div>
+                    {% else %}
+                        <div class="col-6">
+                          <div id="div_id_status" class="form-group">
+                              <label for="id_status" class=" requiredField">
+                              وضعیت
+                                <span class="asteriskField">*</span>
+                              </label>
+                              <div>
+                                <select name="status" class="select form-control" id="id_status">
+                                  <option value="d" selected="">پیش نویس</option>
+                                  <option value="i">ارسال برای ادمین</option>
+                                </select>
+                              </div>
+                          </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <button class="btn btn-success">ارسال مقاله</button>
+                {% if user.is_superuser and request.resolver_match.kwargs.pk %}
+                    <a href="{% url 'account:article-delete' request.resolver_match.kwargs.pk %}" class="btn btn-danger">حذف مقاله</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

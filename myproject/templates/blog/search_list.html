@@ -1,0 +1,17 @@
+{% extends 'blog/list.html' %}
+
+{% block title %}
+| جستجو
+{% endblock %}
+
+{% block header %}
+<h3 class="alert alert-primary text-center">نتایج جستجو: {{ search }}</h3>
+{% endblock %}
+
+{% block previous_page_url %}
+{% url 'blog:search' articles.previous_page_number %}?q={{ search }}
+{% endblock  %}
+
+{% block next_page_url %}
+{% url 'blog:search' articles.next_page_number %}?q={{ search }}
+{% endblock  %}

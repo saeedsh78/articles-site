@@ -1,0 +1,49 @@
+{% extends 'registration/base_register.html' %}
+{% load widget_tweaks %}
+{% block meta-title %}ورود{% endblock %}
+{% block title %}
+	ورود
+{% endblock %}
+					{% block main %}
+					<div class="wrap-input100 validate-input" data-validate = "Valid email is: a@b.c">
+						{{ form.username|add_class:"input100" }}
+						{% if form.username.errors %}
+							<div class="errors">
+								{% for error in form.username.errors %}
+								<span>
+									{{error}}
+								</span>
+								{% endfor %}
+							</div>
+						{% endif %}
+						<span class="focus-input100" data-placeholder="نام کاربری"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate="Enter password">
+						<span class="btn-show-pass">
+							<i class="zmdi zmdi-eye"></i>
+						</span>
+						{{ form.password|add_class:"input100" }}
+						{% if form.password.errors %}
+							<div class="errors">
+								{% for error in form.password.errors %}
+								<span>
+									{{error}}
+								</span>
+								{% endfor %}
+							</div>
+						{% endif %}
+						<span class="focus-input100" data-placeholder="گذرواژه"></span>
+					</div>
+					<a class="myfont" href="{% url 'password_reset' %}">گذرواژه خود را فراموش کرده ام!</a>
+					</br>
+					<a class="myfont" href="{% url 'register' %}">ثبت نام کنید.</a>
+					<div class="container-login100-form-btn">
+						<div class="wrap-login100-form-btn">
+							<div class="login100-form-bgbtn"></div>
+							<button class="login100-form-btn myfont">
+								ورود
+							</button>
+						</div>
+					</div>
+					{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'registration/base.html' %}
+{% block title %}{% block title-meta %}
+    لیست مقالات
+{% endblock %}{% endblock %}
+
+{% block main %}
+        <div class="row">
+          <div class="col-12">
+              {% if object_list %}
+                <div class="card">
+                  <!-- /.card-header -->
+                  <div class="card-body table-responsive p-0">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>عنوان مقاله</th>
+                          <th>تصویر</th>
+                          <th>دسته بندی</th>
+                          <th>نویسنده</th>
+                          <th>خلاصه مقاله</th>
+                          <th>تاریخ انتشار</th>
+                          <th>مقاله ویژه</th>
+                          <th>وضعیت انتشار</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for article in object_list %}
+                            <tr>
+                                {% if user.is_superuser or article.status in 'bd'|make_list %}
+                                    <td><a href="{% url 'account:article-update' article.pk %}">{{article.title}}</a></td>
+                                {% else %}
+                                    <td>{{article.title}}</td>
+                                {% endif %}
+                                <td><img src="{{article.thumbnail.url}}" width="120" height="80"></td>
+                                <td>{{article.category_to_str}}</td>
+                                <td>{{article.author.get_full_name}}</td>
+                                <td>{{ article.description|striptags|truncatewords:30 }}</td>
+                                <td>{{article.jpublish}}</td>
+                                <td>
+                                    {% if article.is_special %}
+                                        <p class="fa fa-check-circle" style="color: green"></p>
+                                    {% else %}
+                                        <p class="fa fa-minus-circle" style="color: red"></p>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if article.status == 'p' %}
+                                        <span class="badge badge-success">منتشر شده</span>
+                                        <a href="{% url 'blog:detail_article' article.slug %}" class="badge badge-primary" target="_blank">نمایش مقاله در سایت</a>
+                                    {% elif article.status == 'i' %}
+                                        <span class="badge badge-primary">در حال بررسی</span>
+                                        {% if user.is_superuser %}
+                                            <a href="{% url 'blog:preview_article' article.pk %}" class="badge badge-info" target="_blank">پیش نمایش مقاله در سایت</a>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if article.status == 'd' %}
+                                            <span class="badge badge-danger">پیش نویس</span>
+                                        {% else %}
+                                            <span class="badge badge-warning">برگشت داده شده</span>
+                                        {% endif %}
+                                        <a href="{% url 'blog:preview_article' article.pk %}" class="badge badge-info" target="_blank">پیش نمایش مقاله در سایت</a>
+                                    {% endif %}
+                                    {% if user.is_superuser %}
+                                        <a href="{% url 'account:article-delete' article.pk %}" class="badge text-danger">حذف مقاله</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+              {% else %}
+                <h3>محتوایی برای نمایش وجود ندارد!</h3>
+              {% endif %}
+            <!-- /.card -->
+          </div>
+        </div>
+{% endblock %}
